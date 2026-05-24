@@ -4,10 +4,10 @@ const cors = require('cors');
 require('dotenv').config();
 
 const paymentRoute =
-require('./routes/payment');
+require('../routes/payment');
 
 const webhookRoute =
-require('./routes/webhook');
+require('../routes/webhook');
 
 const app = express();
 
