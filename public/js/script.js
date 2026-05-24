@@ -14,7 +14,7 @@ buttons.forEach((button) => {
           button.dataset.plan;
 
         const response = await fetch(
-          'http://localhost:3000/payment/create',
+          'https://skinbeauty.onrender.com/payment/create',
 
           {
             method: 'POST',
