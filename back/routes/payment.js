@@ -54,7 +54,7 @@ router.post('/create', async (req, res) => {
           process.env.INFINITE_HANDLE,
 
           redirect_url:
-          'https://public-dvz5gszu9-pedrinhogv55-6900s-projects.vercel.app/success.html',
+          'https://public-delta-sage-68.vercel.app/success.html',
 
         webhook_url:
           ' https://skinbeauty.onrender.com/webhook',
