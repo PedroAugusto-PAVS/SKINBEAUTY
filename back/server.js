@@ -14,6 +14,10 @@ app.use(express.json());
 app.use('/payment', paymentRoute);
 app.use('/webhook', webhookRoute);
 
+app.get('/', (req, res) => {
+  res.send('API SkinBeauty rodando ✅');
+});
+
 app.listen(process.env.PORT || 3000, () => {
   console.log('Servidor rodando');
-});
+}); 
