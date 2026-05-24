@@ -60,7 +60,9 @@ nav a{
 .hero{
   min-height:100vh;
   display:flex;
+  justify-content: center;
   align-items:center;
+  text-align: center;
   padding:120px 5% 80px;
   background:linear-gradient(
     to bottom,
@@ -96,7 +98,8 @@ nav a{
 .hero-info{
   display:flex;
   gap:20px;
-  flex-wrap:wrap;
+  flex-wrap: wrap;
+  justify-content: center;
   margin-bottom:30px;
 }
 
@@ -340,27 +343,42 @@ footer h3{
     z-index:1100;
   }
 
-  nav{
-    position:fixed;
-    top:0;
-    right:-100%;
-    width:75%;
-    height:100vh;
-    background:#fff;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    transition:0.4s;
+  @media (max-width: 768px) {
+    nav {
+      position: absolute;
+      top: 80px;
+      right: 0;
+      width: 100%;
+      background: #fff;
+      display: none;
+      flex-direction: column;
+      text-align: center;
+      padding: 20px 0;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+    }
+  
+    nav.active {
+      display: flex;
+    }
+  
+    nav a {
+      padding: 15px;
+      font-size: 16px;
+    }
+  
+    .menu-toggle {
+      display: block;
+      cursor: pointer;
+      font-size: 28px;
+    }
   }
-
-  nav.active{
-    right:0;
+  
+  @media (min-width: 769px) {
+    .menu-toggle {
+      display: none;
+    }
   }
-
-  nav a{
-    font-size:22px;
-  }
-
   .hero{
     text-align:center;
     justify-content:center;
