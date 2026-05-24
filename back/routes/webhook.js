@@ -51,9 +51,13 @@ router.post('/', async (req, res) => {
 
     if (error) {
 
-      console.log(error);
+      console.log('ERRO SUPABASE:', error);
 
-      return res.sendStatus(500);
+      return res.status(500).json({
+        error: error.message,
+        details: error.details,
+        code: error.code
+      });
     }
 
     console.log('SALVO NO SUPABASE');
@@ -62,9 +66,12 @@ router.post('/', async (req, res) => {
 
   } catch (error) {
 
-    console.log(error);
+    console.log('ERRO NO WEBHOOK:', error);
 
-    return res.sendStatus(500);
+
+    return res.status(500).json({
+      error: error.message
+    });
   }
 });
 
