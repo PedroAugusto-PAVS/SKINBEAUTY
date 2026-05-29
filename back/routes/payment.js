@@ -57,7 +57,7 @@ router.post('/create', async (req, res) => {
           'https://skinbeauty-alpha.vercel.app/success.html',
 
         webhook_url:
-          ' https://skinbeauty.onrender.com/webhook',
+          'https://skinbeauty.onrender.com/webhook',
 
         order_nsu:
           orderNSU,
