@@ -1,73 +1,69 @@
 const express = require('express');
-
-const crypto = require('crypto');
-
-const supabase =
-require('../supabase');
+const { v4: uuidv4 } = require('uuid');
+const supabase = require('../supabase');
 
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-
   try {
-
-    console.log(req.body);
-
     const payment = req.body;
 
-    const { error } =
-      await supabase
-      .from('orders')
-      .insert([
-        {
-          id:
-            crypto.randomUUID(),
+    console.log('WEBHOOK RECEBIDO:', payment);
 
-          customer_name:
-            payment.customer?.name || '',
+    const { data: session, error: sessionError } = await supabase
+      .from('checkout_sessions')
+      .select('*')
+      .eq('order_nsu', payment.order_nsu)
+      .single();
 
-          customer_email:
-            payment.customer?.email || '',
+    if (sessionError || !session) {
+      console.log('SESSAO NAO ENCONTRADA:', sessionError);
 
-          amount:
-            payment.amount / 100,
-
-          status:
-            'paid',
-
-          payment_method:
-            payment.capture_method,
-
-          transaction_nsu:
-            payment.transaction_nsu,
-
-          order_nsu:
-            payment.order_nsu,
-
-          receipt_url:
-            payment.receipt_url
-        }
-      ]);
-
-    if (error) {
-
-      console.log('ERRO SUPABASE:', error);
-
-      return res.status(500).json({
-        error: error.message,
-        details: error.details,
-        code: error.code
+      return res.status(404).json({
+        error: 'Sessão de checkout não encontrada',
+        details: sessionError
       });
     }
 
-    console.log('SALVO NO SUPABASE');
+    const { error: orderError } = await supabase
+      .from('orders')
+      .insert([
+        {
+          id: uuidv4(),
+          customer_name: session.customer_name,
+          customer_email: session.customer_email,
+          customer_phone: session.customer_phone,
+          plan: session.plan,
+          amount: session.amount,
+          status: 'paid',
+          payment_method: payment.capture_method,
+          transaction_nsu: payment.transaction_nsu,
+          order_nsu: payment.order_nsu,
+          receipt_url: payment.receipt_url
+        }
+      ]);
+
+    if (orderError) {
+      console.log('ERRO AO SALVAR ORDER:', orderError);
+
+      return res.status(500).json({
+        error: orderError.message,
+        details: orderError.details,
+        code: orderError.code
+      });
+    }
+
+    await supabase
+      .from('checkout_sessions')
+      .delete()
+      .eq('order_nsu', payment.order_nsu);
+
+    console.log('PEDIDO SALVO EM ORDERS');
 
     return res.sendStatus(200);
 
   } catch (error) {
-
     console.log('ERRO NO WEBHOOK:', error);
-
 
     return res.status(500).json({
       error: error.message
@@ -76,5 +72,3 @@ router.post('/', async (req, res) => {
 });
 
 module.exports = router;
-
-
