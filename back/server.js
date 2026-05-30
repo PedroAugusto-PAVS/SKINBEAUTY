@@ -1,3 +1,7 @@
+//tela de admin
+const adminRoute = require('./routes/admin');
+app.use('/admin', adminRoute);
+
 const express = require('express');
 const cors = require('cors');
 
