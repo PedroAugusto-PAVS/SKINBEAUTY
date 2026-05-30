@@ -8,15 +8,54 @@ if (menuToggle && menu) {
 }
 
 const buttons = document.querySelectorAll('.payBtn');
+const modal = document.getElementById('checkoutModal');
+const closeModal = document.getElementById('closeModal');
+const checkoutForm = document.getElementById('checkoutForm');
+
+let selectedPlan = null;
 
 buttons.forEach((button) => {
-  button.addEventListener('click', async () => {
+  button.addEventListener('click', () => {
+    selectedPlan = button.dataset.plan;
+
+    if (!selectedPlan) {
+      alert('Plano não encontrado.');
+      return;
+    }
+
+    modal.classList.add('active');
+  });
+});
+
+if (closeModal) {
+  closeModal.addEventListener('click', () => {
+    modal.classList.remove('active');
+  });
+}
+
+if (checkoutForm) {
+  checkoutForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const name = document.getElementById('customerName')?.value.trim();
+    const email = document.getElementById('customerEmail')?.value.trim();
+    const phone = document.getElementById('customerPhone')?.value.trim();
+
+    if (!name || !email || !phone) {
+      alert('Preencha nome, e-mail e telefone.');
+      return;
+    }
+
+    const payload = {
+      name,
+      email,
+      phone,
+      plan: selectedPlan
+    };
+
+    console.log('DADOS ENVIADOS:', payload);
+
     try {
-      const plan = button.dataset.plan;
-
-      button.disabled = true;
-      button.innerText = 'Carregando...';
-
       const response = await fetch(
         'https://skinbeauty.onrender.com/payment/create',
         {
@@ -24,18 +63,13 @@ buttons.forEach((button) => {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            name: 'Cliente',
-            email: 'cliente@email.com',
-            phone: '62999999999',
-            plan: plan
-          })
+          body: JSON.stringify(payload)
         }
       );
 
       const data = await response.json();
 
-      console.log('Resposta do backend:', data);
+      console.log('RESPOSTA BACKEND:', data);
 
       if (!response.ok) {
         alert(data.error || 'Erro ao criar checkout');
@@ -43,19 +77,15 @@ buttons.forEach((button) => {
       }
 
       if (!data.checkoutUrl) {
-        alert('Backend não retornou checkoutUrl');
+        alert('Checkout não retornado pelo backend.');
         return;
       }
 
       window.location.href = data.checkoutUrl;
 
     } catch (error) {
-      console.log('Erro no fetch:', error);
+      console.log('ERRO NO PAGAMENTO:', error);
       alert('Erro no pagamento');
-
-    } finally {
-      button.disabled = false;
-      button.innerText = 'Garantir Minha Vaga';
     }
   });
-});
+}
