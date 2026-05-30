@@ -12,7 +12,7 @@ router.post('/create', async (req, res) => {
     const plans = {
       glow: {
         name: 'Plano Glow',
-        price: 15000
+        price: 100
       },
       duo: {
         name: 'Plano Duo',
