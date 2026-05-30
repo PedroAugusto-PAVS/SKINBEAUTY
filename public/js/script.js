@@ -8,107 +8,84 @@ if (menuToggle && menu) {
 }
 
 const buttons = document.querySelectorAll('.payBtn');
-
-const modal =
-document.getElementById('checkoutModal');
-
-const closeModal =
-document.getElementById('closeModal');
-
-const checkoutForm =
-document.getElementById('checkoutForm');
+const modal = document.getElementById('checkoutModal');
+const closeModal = document.getElementById('closeModal');
+const checkoutForm = document.getElementById('checkoutForm');
 
 let selectedPlan = null;
 
 buttons.forEach((button) => {
-
   button.addEventListener('click', () => {
+    selectedPlan = button.dataset.plan;
 
-    selectedPlan =
-      button.dataset.plan;
+    if (!selectedPlan) {
+      alert('Plano não encontrado.');
+      return;
+    }
 
     modal.classList.add('active');
-
   });
-
 });
 
-closeModal.addEventListener('click', () => {
+if (closeModal) {
+  closeModal.addEventListener('click', () => {
+    modal.classList.remove('active');
+  });
+}
 
-  modal.classList.remove('active');
-
-});
-
-checkoutForm.addEventListener(
-  'submit',
-
-  async (event) => {
-
+if (checkoutForm) {
+  checkoutForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const name =
-      document.getElementById(
-        'customerName'
-      ).value;
+    const name = document.getElementById('customerName')?.value.trim();
+    const email = document.getElementById('customerEmail')?.value.trim();
+    const phone = document.getElementById('customerPhone')?.value.trim();
 
-    const email =
-      document.getElementById(
-        'customerEmail'
-      ).value;
+    if (!name || !email || !phone) {
+      alert('Preencha nome, e-mail e telefone.');
+      return;
+    }
 
-    const phone =
-      document.getElementById(
-        'customerPhone'
-      ).value;
+    const payload = {
+      name,
+      email,
+      phone,
+      plan: selectedPlan
+    };
+
+    console.log('DADOS ENVIADOS:', payload);
 
     try {
+      const response = await fetch(
+        'https://skinbeauty.onrender.com/payment/create',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        }
+      );
 
-      const response =
-        await fetch(
-          'https://skinbeauty.onrender.com/payment/create',
-          {
-            method: 'POST',
+      const data = await response.json();
 
-            headers: {
-              'Content-Type':
-                'application/json'
-            },
-
-            body: JSON.stringify({
-              name,
-              email,
-              phone,
-              plan:
-                selectedPlan
-            })
-          }
-        );
-
-      const data =
-        await response.json();
+      console.log('RESPOSTA BACKEND:', data);
 
       if (!response.ok) {
-
-        alert(
-          data.error ||
-          'Erro ao criar checkout'
-        );
-
+        alert(data.error || 'Erro ao criar checkout');
         return;
       }
 
-      window.location.href =
-        data.checkoutUrl;
+      if (!data.checkoutUrl) {
+        alert('Checkout não retornado pelo backend.');
+        return;
+      }
+
+      window.location.href = data.checkoutUrl;
 
     } catch (error) {
-
-      console.log(error);
-
-      alert(
-        'Erro no pagamento'
-      );
-
+      console.log('ERRO NO PAGAMENTO:', error);
+      alert('Erro no pagamento');
     }
-
-  }
-);
+  });
+}
