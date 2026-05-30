@@ -10,18 +10,34 @@ router.post('/', async (req, res) => {
 
     console.log('WEBHOOK RECEBIDO:', payment);
 
+    if (!payment.order_nsu) {
+      return res.status(400).json({
+        error: 'order_nsu não recebido'
+      });
+    }
+
+    const { data: existingOrder } = await supabase
+      .from('orders')
+      .select('id')
+      .eq('order_nsu', payment.order_nsu)
+      .maybeSingle();
+
+    if (existingOrder) {
+      console.log('PEDIDO JÁ SALVO');
+      return res.sendStatus(200);
+    }
+
     const { data: session, error: sessionError } = await supabase
       .from('checkout_sessions')
       .select('*')
       .eq('order_nsu', payment.order_nsu)
-      .single();
+      .maybeSingle();
 
     if (sessionError || !session) {
-      console.log('SESSAO NAO ENCONTRADA:', sessionError);
+      console.log('SESSÃO NÃO ENCONTRADA:', sessionError);
 
       return res.status(404).json({
-        error: 'Sessão de checkout não encontrada',
-        details: sessionError
+        error: 'Sessão de checkout não encontrada'
       });
     }
 
@@ -36,10 +52,13 @@ router.post('/', async (req, res) => {
           plan: session.plan,
           amount: session.amount,
           status: 'paid',
-          payment_method: payment.capture_method,
-          transaction_nsu: payment.transaction_nsu,
+          payment_method: payment.capture_method || null,
+          transaction_nsu:
+            payment.transaction_nsu ||
+            payment.transaction_id ||
+            null,
           order_nsu: payment.order_nsu,
-          receipt_url: payment.receipt_url
+          receipt_url: payment.receipt_url || null
         }
       ]);
 
