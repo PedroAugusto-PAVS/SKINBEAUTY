@@ -414,3 +414,59 @@ footer h3{
   }
 
 }
+.checkout-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.checkout-modal.active {
+  display: flex;
+}
+
+.checkout-box {
+  background: #fff;
+  width: 90%;
+  max-width: 420px;
+  padding: 30px;
+  border-radius: 20px;
+  position: relative;
+}
+
+.checkout-box h2 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.checkout-box input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.checkout-box button[type="submit"] {
+  width: 100%;
+  padding: 14px;
+  background: #ff4f87;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.close-modal {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  border: none;
+  background: transparent;
+  font-size: 28px;
+  cursor: pointer;
+}
