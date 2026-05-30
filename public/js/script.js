@@ -9,53 +9,106 @@ if (menuToggle && menu) {
 
 const buttons = document.querySelectorAll('.payBtn');
 
+const modal =
+document.getElementById('checkoutModal');
+
+const closeModal =
+document.getElementById('closeModal');
+
+const checkoutForm =
+document.getElementById('checkoutForm');
+
+let selectedPlan = null;
+
 buttons.forEach((button) => {
-  button.addEventListener('click', async () => {
+
+  button.addEventListener('click', () => {
+
+    selectedPlan =
+      button.dataset.plan;
+
+    modal.classList.add('active');
+
+  });
+
+});
+
+closeModal.addEventListener('click', () => {
+
+  modal.classList.remove('active');
+
+});
+
+checkoutForm.addEventListener(
+  'submit',
+
+  async (event) => {
+
+    event.preventDefault();
+
+    const name =
+      document.getElementById(
+        'customerName'
+      ).value;
+
+    const email =
+      document.getElementById(
+        'customerEmail'
+      ).value;
+
+    const phone =
+      document.getElementById(
+        'customerPhone'
+      ).value;
+
     try {
-      const plan = button.dataset.plan;
 
-      button.disabled = true;
-      button.innerText = 'Carregando...';
+      const response =
+        await fetch(
+          'https://skinbeauty.onrender.com/payment/create',
+          {
+            method: 'POST',
 
-      const response = await fetch(
-        'https://skinbeauty.onrender.com/payment/create',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            name: 'Cliente',
-            email: 'cliente@email.com',
-            phone: '62999999999',
-            plan: plan
-          })
-        }
-      );
+            headers: {
+              'Content-Type':
+                'application/json'
+            },
 
-      const data = await response.json();
+            body: JSON.stringify({
+              name,
+              email,
+              phone,
+              plan:
+                selectedPlan
+            })
+          }
+        );
 
-      console.log('Resposta do backend:', data);
+      const data =
+        await response.json();
 
       if (!response.ok) {
-        alert(data.error || 'Erro ao criar checkout');
+
+        alert(
+          data.error ||
+          'Erro ao criar checkout'
+        );
+
         return;
       }
 
-      if (!data.checkoutUrl) {
-        alert('Backend não retornou checkoutUrl');
-        return;
-      }
-
-      window.location.href = data.checkoutUrl;
+      window.location.href =
+        data.checkoutUrl;
 
     } catch (error) {
-      console.log('Erro no fetch:', error);
-      alert('Erro no pagamento');
 
-    } finally {
-      button.disabled = false;
-      button.innerText = 'Garantir Minha Vaga';
+      console.log(error);
+
+      alert(
+        'Erro no pagamento'
+      );
+
     }
-  });
-});
+
+  }
+);
