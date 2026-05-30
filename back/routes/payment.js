@@ -12,7 +12,7 @@ router.post('/create', async (req, res) => {
     const plans = {
       glow: {
         name: 'Plano Glow',
-        price: 100
+        price: 15000
       },
       duo: {
         name: 'Plano Duo',
@@ -32,27 +32,31 @@ router.post('/create', async (req, res) => {
       });
     }
 
+    if (!name || !email || !phone) {
+      return res.status(400).json({
+        error: 'Preencha nome, email e telefone'
+      });
+    }
+
     const orderNSU = uuidv4();
 
-    const { error } = await supabase
-      .from('orders')
+    const { error: sessionError } = await supabase
+      .from('checkout_sessions')
       .insert([
         {
           id: orderNSU,
           customer_name: name,
           customer_email: email,
+          customer_phone: phone,
+          plan: selectedPlan.name,
           amount: selectedPlan.price / 100,
-          status: 'pending',
-          payment_method: null,
-          transaction_nsu: null,
-          order_nsu: orderNSU,
-          receipt_url: null
+          order_nsu: orderNSU
         }
       ]);
 
-    if (error) {
+    if (sessionError) {
       return res.status(500).json({
-        error: error.message
+        error: sessionError.message
       });
     }
 
