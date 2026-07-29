@@ -1,201 +1,138 @@
-💄 SkinBeauty - Curso Presencial de Automaquiagem
+# SkinBeauty
 
-📖 Sobre o Projeto
+[![HTML5](https://img.shields.io/badge/frontend-HTML%20%7C%20CSS%20%7C%20JS-E34F26)](./public)
+[![Node.js](https://img.shields.io/badge/backend-Node.js-339933)](./back)
+[![Supabase](https://img.shields.io/badge/database-Supabase-3ECF8E)](./back)
+[![Licença MIT](https://img.shields.io/badge/licença-MIT-green.svg)](./LICENSE)
 
-SkinBeauty é uma plataforma web desenvolvida para divulgação e venda de vagas para um curso presencial de automaquiagem.
+Plataforma web para divulgação e venda de vagas de um curso presencial de automaquiagem. O projeto integra landing page responsiva, checkout InfinitePay, confirmação por webhook, persistência no Supabase e dashboard administrativo.
 
-O sistema permite que clientes escolham um plano, realizem o pagamento através da InfinitePay e tenham seus dados registrados automaticamente após a confirmação do pagamento.
+## Links
 
----
+- **Aplicação:** https://skinbeauty-alpha.vercel.app
+- **API:** https://skinbeauty.onrender.com
 
-✨ Funcionalidades
+> Os serviços podem levar alguns segundos para responder após períodos de inatividade, conforme o plano da hospedagem.
 
-- Landing Page responsiva
-- Design moderno e otimizado para dispositivos móveis
-- Menu responsivo para celulares
-- Exibição de benefícios e conteúdos do curso
-- Escolha entre diferentes planos
-- Integração com InfinitePay Checkout
-- Redirecionamento automático após pagamento
-- Webhook para confirmação de pagamentos
-- Integração com Supabase
-- Registro automático de clientes pagantes
-- Dashboard administrativo para visualização dos alunos inscritos
-- Botão de contato via WhatsApp
+## Funcionalidades
 
----
+- Landing page responsiva com abordagem mobile-first.
+- Apresentação do curso, benefícios e planos.
+- Coleta dos dados do participante.
+- Integração com o checkout da InfinitePay.
+- Confirmação do pagamento por webhook.
+- Registro automático de clientes pagantes no Supabase.
+- Página de sucesso após a compra.
+- Dashboard administrativo de inscritos.
+- Contato rápido por WhatsApp.
 
-🛠 Tecnologias Utilizadas
+## Fluxo da compra
 
-Frontend
+```text
+Escolha do plano
+      ↓
+Dados do participante
+      ↓
+Checkout InfinitePay
+      ↓
+Confirmação por webhook
+      ↓
+Registro no Supabase
+      ↓
+Página de sucesso
+```
 
-- HTML5
-- CSS3
-- JavaScript
+## Tecnologias
 
-Backend
+| Área | Tecnologias |
+|---|---|
+| Front-end | HTML5, CSS3 e JavaScript |
+| Back-end | Node.js e Express |
+| Banco de dados | Supabase |
+| Pagamentos | InfinitePay API |
+| Hospedagem | Vercel e Render |
 
-- Node.js
-- Express.js
+## Como executar
 
-Banco de Dados
+### Pré-requisitos
 
-- Supabase
+- Node.js e npm.
+- Projeto no Supabase.
+- Conta e handle configurados na InfinitePay.
 
-Pagamentos
+### Back-end
 
-- InfinitePay API
+```bash
+git clone https://github.com/PedroAugusto-PAVS/SKINBEAUTY.git
+cd SKINBEAUTY/back
+npm install
+npm start
+```
 
-Hospedagem
+### Front-end
 
-- Vercel (Frontend)
-- Render (Backend)
+Sirva a pasta `public/` com um servidor estático:
 
----
+```bash
+cd SKINBEAUTY
+npx serve public
+```
 
-📂 Estrutura do Projeto
+## Variáveis de ambiente
 
-SKINBEAUTY
-│
-├── back
-│   ├── routes
-│   │   ├── payment.js
-│   │   ├── webhook.js
-│   │   └── admin.js
-│   │
-│   ├── server.js
-│   ├── supabase.js
-│   └── package.json
-│
-├── public
-│   ├── css
-│   │   └── style.css
-│   │
-│   ├── js
-│   │   ├── script.js
-│   │   └── admin.js
-│   │
-│   ├── img
-│   │
-│   ├── index.html
-│   ├── success.html
-│   └── admin.html
-│
-└── README.md
+Crie `back/.env` apenas no ambiente local ou na plataforma de hospedagem:
 
----
-
-💰 Planos Disponíveis
-
-Plano Glow
-
-- Curso presencial
-- Aula prática
-- Certificado
-- Técnicas de automaquiagem
-
-Plano Duo
-
-- Atendimento mais próximo
-- Técnicas personalizadas
-- Certificado
-- Suporte para dúvidas
-
-Plano VIP
-
-- Aula individual
-- Atendimento exclusivo
-- Técnicas personalizadas
-- Cronograma exclusivo
-
----
-
-🔐 Dashboard Administrativo
-
-O sistema possui uma área administrativa protegida por senha onde é possível visualizar:
-
-- Nome dos clientes
-- E-mail
-- Telefone
-- Plano adquirido
-- Valor pago
-- Método de pagamento
-
-Acesso:
-
-/admin.html
-
----
-
-🔄 Fluxo de Funcionamento
-
-Cliente escolhe um plano
-        ↓
-Preenche os dados
-        ↓
-InfinitePay Checkout
-        ↓
-Pagamento aprovado
-        ↓
-Webhook recebe confirmação
-        ↓
-Dados gravados no Supabase
-        ↓
-Cliente redirecionado para tela de sucesso
-
----
-
-⚙️ Variáveis de Ambiente
-
-Backend (.env)
-
+```env
 PORT=3000
-
-SUPABASE_URL=SEU_SUPABASE_URL
-
-SUPABASE_KEY=SUA_SUPABASE_SERVICE_ROLE_KEY
-
+SUPABASE_URL=https://SEU-PROJETO.supabase.co
+SUPABASE_KEY=SUA_CHAVE_PRIVADA_DO_BACKEND
 INFINITE_HANDLE=SEU_HANDLE_INFINITEPAY
+ADMIN_PASSWORD=UMA_SENHA_FORTE
+```
 
-ADMIN_PASSWORD=SUA_SENHA_ADMIN
+### Cuidados importantes
 
----
+- Nunca envie `.env` para o GitHub.
+- A chave privilegiada do Supabase deve existir apenas no back-end.
+- Valide a autenticidade dos webhooks antes de confiar nos dados recebidos.
+- Use HTTPS em produção.
+- Armazene segredos nas variáveis protegidas da hospedagem.
+- Restrinja e audite o acesso ao dashboard administrativo.
 
-🚀 Deploy
+## Estrutura do projeto
 
-Frontend
+```text
+.
+├── back/
+│   ├── routes/          # pagamento, webhook e administração
+│   ├── server.js        # servidor Express
+│   ├── supabase.js      # integração com o banco
+│   └── package.json
+├── public/
+│   ├── css/             # estilos
+│   ├── js/              # scripts da interface
+│   ├── img/             # imagens
+│   ├── index.html       # landing page
+│   ├── success.html     # confirmação da compra
+│   └── admin.html       # painel administrativo
+├── LICENSE
+└── README.md
+```
 
-Hospedado na Vercel:
+## Deploy
 
-https://skinbeauty-alpha.vercel.app
+### Front-end — Vercel
 
-Backend
+Publique a pasta `public/` e configure a URL pública do back-end usada pelo navegador.
 
-Hospedado no Render:
+### Back-end — Render
 
-https://skinbeauty.onrender.com
+Configure o diretório `back/`, os comandos de instalação e inicialização e todas as variáveis de ambiente. Cadastre no provedor de pagamento a URL pública correta do webhook.
 
----
+## Licença
 
-📱 Responsividade
+Distribuído sob a licença MIT. Consulte [LICENSE](./LICENSE).
 
-O projeto foi desenvolvido utilizando abordagem Mobile First, garantindo ótima experiência em:
+## Autor
 
-- Smartphones
-- Tablets
-- Notebooks
-- Computadores Desktop
-
----
-
-👨‍💻 Autor
-
-Pedro Augusto
-
-Tecnólogo em Análise e Desenvolvimento de Sistemas
-
-GitHub:
-https://github.com/PedroAugusto-PAVS
-
-LinkedIn:
-https://www.linkedin.com/in/pedro-augusto-vieira-santos-780391207?utm_source=share_via&utm_content=profile&utm_medium=member_android
+Desenvolvido por [Pedro Augusto](https://github.com/PedroAugusto-PAVS).
